@@ -1,0 +1,223 @@
+﻿using Microsoft.Extensions.Logging;
+using System.Diagnostics;
+
+namespace Highlight.Api;
+internal sealed class SmartHttpClientHandler(HighlightClientOptions options) : HttpClientHandler
+{
+	private readonly HighlightClientOptions _options = options;
+	private readonly ILogger _logger = options.Logger;
+	private readonly LogLevel _levelToLogAt = LogLevel.Trace;
+
+	private readonly Stopwatch _durationStopWatch = new();
+
+	protected override async Task<HttpResponseMessage> SendAsync(
+		HttpRequestMessage request,
+		CancellationToken cancellationToken)
+	{
+		if (_options.IsReadOnly)
+		{
+			// Simplistic ReadOnly implementation to ensure only reading from the API
+			// Check that this is a GET
+			if (request.Method != HttpMethod.Get)
+			{
+				throw new InvalidOperationException(Resources.OnlyReadOnlyOperationsPermitted);
+			}
+		}
+
+		var logPrefix = $"Request {Guid.NewGuid()}: ";
+
+		// Add the request headers
+		request.Headers.Add("x-api-key", _options.ApiKey.ToString().ToUpperInvariant());
+		if (_options.UserAgent is not null)
+		{
+			request.Headers.Add("User-Agent", _options.UserAgent);
+		}
+
+		var attemptCount = 0;
+		while (true)
+		{
+			_durationStopWatch.Restart();
+			attemptCount++;
+			cancellationToken.ThrowIfCancellationRequested();
+
+			// Only do diagnostic logging if we're at the level we want to enable for as this is more efficient
+			if (_logger.IsEnabled(_levelToLogAt))
+			{
+				_logger.Log(_levelToLogAt, "{LogPrefix}Request\r\n{Request}", logPrefix, request);
+				if (request.Content != null)
+				{
+					var requestContent = await request.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+					_logger.Log(_levelToLogAt, "{LogPrefix}RequestContent\r\n{RequestContent}", logPrefix, requestContent);
+				}
+			}
+
+			// Complete the action
+			HttpResponseMessage httpResponseMessage;
+
+			try
+			{
+				httpResponseMessage = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+			}
+			catch (HttpRequestException ex) when (ex.Message.StartsWith("Network is unreachable", StringComparison.Ordinal))
+			{
+				// This is a common error that seems to occur when contacting meraki nodes, so we'll log it as a warning and retry
+
+				// Try up to the maximum retry count.
+				if (attemptCount >= _options.MaxAttemptCount)
+				{
+					_logger.LogError(
+						"{LogPrefix}Giving up retrying. Received \"Network is unreachable\" on attempt {AttemptCount}/{MaxAttemptCount}. ({Method} - {Url})",
+						logPrefix, attemptCount, _options.MaxAttemptCount,
+						request.Method.ToString(),
+						request.RequestUri
+						);
+					throw;
+				}
+
+				_logger.LogWarning(
+					"{LogPrefix}Received \"Network is unreachable\" on attempt {AttemptCount}/{MaxAttemptCount}. ({Method} - {Url})",
+					logPrefix, attemptCount, _options.MaxAttemptCount,
+					request.Method.ToString(),
+					request.RequestUri
+					);
+
+				// Wait 1 seconds and then retry
+				await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken).ConfigureAwait(false);
+				continue;
+			}
+
+			// Only do diagnostic logging if we're at the level we want to enable for as this is more efficient
+			if (_logger.IsEnabled(_levelToLogAt))
+			{
+				_logger.Log(_levelToLogAt, "{LogPrefix}Response\r\n{HttpResponseMessage}", logPrefix, httpResponseMessage);
+				if (httpResponseMessage.Content != null)
+				{
+					var responseContent = await httpResponseMessage.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+					_logger.Log(_levelToLogAt, "{LogPrefix}ResponseContent\r\n{ResponseContent}", logPrefix, responseContent);
+				}
+			}
+
+			// Only record the time we spent processing the request/response
+			_durationStopWatch.Stop();
+
+			TimeSpan delay;
+			// As long as we were not given a back-off request then we'll return the response and any further StatusCode handling is up to the caller
+			var statusCodeInt = (int)httpResponseMessage.StatusCode;
+
+			try
+			{
+				switch (statusCodeInt)
+				{
+					case 429:
+						// Back off by the requested amount.
+						var headers = httpResponseMessage.Headers;
+						var foundHeader = headers.TryGetValues("Retry-After", out var retryAfterHeaders);
+						var retryAfterSecondsString = foundHeader
+							? retryAfterHeaders?.FirstOrDefault() ?? "1"
+							: "1";
+						if (!int.TryParse(retryAfterSecondsString, out var retryAfterSeconds))
+						{
+							retryAfterSeconds = 1;
+						}
+
+						delay = CalculateBackoffDelay(
+							attemptCount,
+							retryAfterSeconds,
+							_options.BackOffDelayFactor,
+							_options.MaxBackOffDelaySeconds);
+
+						_logger.LogDebug(
+							"{LogPrefix}Received {StatusCodeInt} on attempt {AttemptCount}/{MaxAttemptCount}.",
+							logPrefix, statusCodeInt, attemptCount, _options.MaxAttemptCount
+							);
+						break;
+					case 502:
+					case 503:
+					case 504:
+						_logger.LogInformation(
+							"{LogPrefix}Received {StatusCodeInt} on attempt {AttemptCount}/{MaxAttemptCount}.",
+							logPrefix, statusCodeInt, attemptCount, _options.MaxAttemptCount
+							);
+						delay = TimeSpan.FromSeconds(5);
+						break;
+					default:
+						if (attemptCount > 1)
+						{
+							_logger.LogDebug(
+								"{LogPrefix}Received {StatusCodeInt} on attempt {AttemptCount}/{MaxAttemptCount}.",
+								logPrefix, statusCodeInt, attemptCount, _options.MaxAttemptCount
+								);
+						}
+
+						if (statusCodeInt == 500)
+						{
+							_logger.LogError(
+								"{LogPrefix}Received remote error code 500 on attempt {AttemptCount}/{MaxAttemptCount}. ({Method} - {Url})",
+								logPrefix,
+								attemptCount,
+								_options.MaxAttemptCount,
+								request.Method.ToString(),
+								request.RequestUri
+								);
+						}
+
+						return httpResponseMessage;
+				}
+
+				// Try up to the maximum retry count.
+				if (attemptCount >= _options.MaxAttemptCount)
+				{
+					_logger.LogInformation(
+						"{LogPrefix}Giving up retrying. Returning {StatusCodeInt} on attempt {AttemptCount}/{MaxAttemptCount}. ({Method} - {Url})",
+						logPrefix,
+						statusCodeInt,
+						attemptCount,
+						_options.MaxAttemptCount,
+						request.Method.ToString(),
+						request.RequestUri
+						);
+					return httpResponseMessage;
+				}
+
+				_logger.LogInformation(
+					"{LogPrefix}Received {StatusCode} on attempt {AttemptCount}/{MaxAttemptCount} - Waiting {TotalSeconds:N2}s. ({Method} - {Url})",
+					logPrefix,
+					statusCodeInt,
+					attemptCount,
+					_options.MaxAttemptCount,
+					delay.TotalSeconds,
+					request.Method.ToString(),
+					request.RequestUri
+					);
+
+				await Task.Delay(delay, cancellationToken).ConfigureAwait(false);
+			}
+			finally
+			{
+				// Record the status code
+				//Statistics.RecordStatusCode(statusCodeInt, (long)_durationStopWatch.Elapsed.TotalMilliseconds, (long)delay.TotalMilliseconds);
+			}
+		}
+	}
+
+	/// <summary>
+	/// Calculate the back-off delay taking into account the retry-after header, the attemptcount and back-off factor and the maximum back-off delay.
+	/// Wait at least retryAfterSeconds, then back off by the backOffDelayFactor to the power of the attemptCount, but no more than maxBackOffDelay.
+	/// </summary>
+	internal static TimeSpan CalculateBackoffDelay(
+		int attemptCount,
+		int retryAfterSeconds,
+		double backOffDelayFactor,
+		int maxBackOffDelaySeconds)
+		=> TimeSpan.FromSeconds(
+			Math.Min(
+				Math.Max(
+					// Wait as long as we can based on the attemptCount
+					Math.Pow(backOffDelayFactor, attemptCount - 1),
+					retryAfterSeconds
+				),
+				// But no longer than the maximum
+				maxBackOffDelaySeconds)
+			);
+}
+
