@@ -5,11 +5,11 @@ namespace Highlight.Api.Data;
 public class WatchNodeVpnTunnel
 {
 	[JsonPropertyName("details")]
-	public string Details { get; set; }
+	public required string Details { get; set; }
 
 	[JsonPropertyName("parentDeviceName")]
-	public string ParentDeviceName { get; set; }
+	public required string ParentDeviceName { get; set; }
 
 	[JsonPropertyName("destination")]
-	public string Destination { get; set; }
+	public required string Destination { get; set; }
 }

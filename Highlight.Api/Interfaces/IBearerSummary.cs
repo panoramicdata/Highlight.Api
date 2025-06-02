@@ -43,7 +43,7 @@ public interface IBearerSummary
 	/// Cancellation token.
 	/// </param>
 	[Get("/api/v2/summary/bearer")]
-	Task<List<BearerSummary>> GetAllAsync(
+	Task<List<BearerSummary>> GetAsync(
 		[Query] bool? isBusinessHours = null,
 		[Query] int? lastNDays = null,
 		[Query] string? fromDate = null,

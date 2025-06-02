@@ -10,7 +10,7 @@ public class BearerSummaryTests(ITestOutputHelper iTestOutputHelper, Fixture fix
 	{
 		var watchNodes = await Client
 			.BearerSummary
-			.GetAllAsync(
+			.GetAsync(
 				lastNDays: 1,
 				outputAvailability: true,
 				outputLoad: true,

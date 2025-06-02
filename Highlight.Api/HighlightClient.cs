@@ -30,12 +30,30 @@ public class HighlightClient : IDisposable
 		};
 
 		BearerSummary = RestService.For<IBearerSummary>(_httpClient, refitSettings);
+		BroadbandSummary = RestService.For<IBroadbandSummary>(_httpClient, refitSettings);
+		CellularSummary = RestService.For<ICellularSummary>(_httpClient, refitSettings);
+		Folders = RestService.For<IFolders>(_httpClient, refitSettings);
+		PerformanceTestSummary = RestService.For<IPerformanceTestSummary>(_httpClient, refitSettings);
+		TunnelSummary = RestService.For<ITunnelSummary>(_httpClient, refitSettings);
 		WatchNodes = RestService.For<IWatchNodes>(_httpClient, refitSettings);
+		WirelessAccessPoints = RestService.For<IWirelessAccessPointSummary>(_httpClient, refitSettings);
 	}
 
 	public IBearerSummary BearerSummary { get; }
 
+	public IBroadbandSummary BroadbandSummary { get; }
+
+	public ICellularSummary CellularSummary { get; }
+
+	public IFolders Folders { get; }
+
+	public IPerformanceTestSummary PerformanceTestSummary { get; }
+
+	public ITunnelSummary TunnelSummary { get; }
+
 	public IWatchNodes WatchNodes { get; }
+
+	public IWirelessAccessPointSummary WirelessAccessPoints { get; }
 
 	protected virtual void Dispose(bool disposing)
 	{
