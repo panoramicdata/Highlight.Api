@@ -9,51 +9,51 @@ public class PerformanceSummaryTests(ITestOutputHelper iTestOutputHelper, Fixtur
 	[Fact]
 	public async Task GetHttpServerSucceeds()
 	{
-		var watchNodes = await Client
+		var result = await Client
 			.PerformanceTestSummary
 			.GetHttpServerAsync(
 				lastNDays: 1,
 				cancellationToken: default);
 
-		watchNodes.Should().NotBeNull();
-		watchNodes.Should().NotBeEmpty();
+		result.Should().NotBeNull();
+		result.Should().NotBeEmpty();
 	}
 
 	[Fact]
 	public async Task GetIcmpTcpUdpSucceeds()
 	{
-		var watchNodes = await Client
+		var result = await Client
 			.PerformanceTestSummary
 			.GetIcmpTcpUdpAsync(
 				lastNDays: 1,
 				cancellationToken: default);
 
-		watchNodes.Should().NotBeNull();
-		watchNodes.Should().NotBeEmpty();
+		result.Should().NotBeNull();
+		result.Should().NotBeEmpty();
 	}
 
 	[Fact]
 	public async Task GetMosSucceeds()
 	{
-		var watchNodes = await Client
+		var result = await Client
 			.PerformanceTestSummary
 			.GetMosAsync(
 				lastNDays: 1,
 				cancellationToken: default);
-		watchNodes.Should().NotBeNull();
-		watchNodes.Should().NotBeEmpty();
+		result.Should().NotBeNull();
+		result.Should().NotBeEmpty();
 	}
 
 	[Fact]
 	public async Task GetPrecisionSucceeds()
 	{
-		var watchNodes = await Client
+		var result = await Client
 			.PerformanceTestSummary
 			.GetPrecisionAsync(
 				lastNDays: 1,
 				cancellationToken: default);
 
-		watchNodes.Should().NotBeNull();
-		watchNodes.Should().NotBeEmpty();
+		result.Should().NotBeNull();
+		result.Should().NotBeEmpty();
 	}
 }
