@@ -14,7 +14,8 @@ internal class BetterJsonStringEnumConverter : JsonConverterFactory
 	public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
 	{
 		var converterType = typeof(EnumMemberConverter<>).MakeGenericType(typeToConvert);
-		return (JsonConverter)Activator.CreateInstance(converterType);
+		return Activator.CreateInstance(converterType) as JsonConverter
+			?? throw new InvalidOperationException($"Could not create {nameof(BetterJsonStringEnumConverter)} as a {nameof(JsonConverter)}");
 	}
 
 	private class EnumMemberConverter<T> : JsonConverter<T> where T : struct, Enum
@@ -40,7 +41,7 @@ internal class BetterJsonStringEnumConverter : JsonConverterFactory
 
 		public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 		{
-			var value = reader.GetString();
+			var value = reader.GetString() ?? throw new InvalidDataException($"Could not read string from {nameof(Utf8JsonReader)}");
 			if (_fromValue.TryGetValue(value, out var result))
 			{
 				return result;

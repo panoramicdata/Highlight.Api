@@ -17,7 +17,7 @@ public class BearerSummary
 	public required string DateGranularity { get; set; }
 
 	[JsonPropertyName("lastDateSummarised")]
-	public required string LastDateSummarised { get; set; }
+	public required string LastDateSummarized { get; set; }
 
 	[JsonPropertyName("health")]
 	public required BearerSummaryHealth? Health { get; set; }

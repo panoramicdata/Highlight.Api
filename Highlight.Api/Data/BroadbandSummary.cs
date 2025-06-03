@@ -34,7 +34,7 @@ public class BroadbandSummary
 	/// The date when the summary record was last updated. This can be different to the 'date' when 'patching' occurs.
 	/// </summary>
 	[JsonPropertyName("lastDateSummarised")]
-	public required string LastDateSummarised { get; set; }
+	public required string LastDateSummarized { get; set; }
 
 	/// <summary>
 	/// Broadband related content.

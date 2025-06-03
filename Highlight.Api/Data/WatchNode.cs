@@ -61,7 +61,7 @@ public class WatchNode
 	public required PerformanceWatch? PerformanceWatch { get; set; }
 
 	[JsonPropertyName("wapWatch")]
-	public required WapWatch? WapWatch { get; set; }
+	public required WirelessActionPointWatch? WirelessActionPointWatch { get; set; }
 
 	[JsonPropertyName("apiName")]
 	public required object ApiName { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Highlight.Api.Data;
 
-public class WapWatch
+public class WirelessActionPointWatch
 {
 	[JsonPropertyName("location")]
 	public required string Location { get; set; }
