@@ -11,25 +11,25 @@ public class TunnelSummaryLoad
 	/// The average inbound load in bps.
 	/// </summary>
 	[JsonPropertyName("ldInAvgbps")]
-	public required int? LoadInAvgBps { get; set; }
+	public required int? LoadInAverageBps { get; set; }
 
 	/// <summary>
 	/// The average inbound load percent.
 	/// </summary>
 	[JsonPropertyName("ldInAvgPc")]
-	public required float? LoadInAvgPercent { get; set; }
+	public required float? LoadInAveragePercent { get; set; }
 
 	/// <summary>
 	/// The average outbound load in bps.
 	/// </summary>
 	[JsonPropertyName("ldOutAvgbps")]
-	public required int? LoadOutAvgBps { get; set; }
+	public required int? LoadOutAverageBps { get; set; }
 
 	/// <summary>
 	/// The average outbound load percent.
 	/// </summary>
 	[JsonPropertyName("ldOutAvgPc")]
-	public required float? LoadOutAvgPercent { get; set; }
+	public required float? LoadOutAveragePercent { get; set; }
 
 	/// <summary>
 	/// The 95th percentile inbound load in bps.

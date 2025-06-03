@@ -52,39 +52,7 @@ internal sealed class SmartHttpClientHandler(HighlightClientOptions options) : H
 			}
 
 			// Complete the action
-			HttpResponseMessage httpResponseMessage;
-
-			try
-			{
-				httpResponseMessage = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
-			}
-			catch (HttpRequestException ex) when (ex.Message.StartsWith("Network is unreachable", StringComparison.Ordinal))
-			{
-				// This is a common error that seems to occur when contacting meraki nodes, so we'll log it as a warning and retry
-
-				// Try up to the maximum retry count.
-				if (attemptCount >= _options.MaxAttemptCount)
-				{
-					_logger.LogError(
-						"{LogPrefix}Giving up retrying. Received \"Network is unreachable\" on attempt {AttemptCount}/{MaxAttemptCount}. ({Method} - {Url})",
-						logPrefix, attemptCount, _options.MaxAttemptCount,
-						request.Method.ToString(),
-						request.RequestUri
-						);
-					throw;
-				}
-
-				_logger.LogWarning(
-					"{LogPrefix}Received \"Network is unreachable\" on attempt {AttemptCount}/{MaxAttemptCount}. ({Method} - {Url})",
-					logPrefix, attemptCount, _options.MaxAttemptCount,
-					request.Method.ToString(),
-					request.RequestUri
-					);
-
-				// Wait 1 seconds and then retry
-				await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken).ConfigureAwait(false);
-				continue;
-			}
+			var httpResponseMessage = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
 			// Only do diagnostic logging if we're at the level we want to enable for as this is more efficient
 			if (_logger.IsEnabled(_levelToLogAt))
@@ -201,7 +169,7 @@ internal sealed class SmartHttpClientHandler(HighlightClientOptions options) : H
 	}
 
 	/// <summary>
-	/// Calculate the back-off delay taking into account the retry-after header, the attemptcount and back-off factor and the maximum back-off delay.
+	/// Calculate the back-off delay taking into account the retry-after header, the attempt count and back-off factor and the maximum back-off delay.
 	/// Wait at least retryAfterSeconds, then back off by the backOffDelayFactor to the power of the attemptCount, but no more than maxBackOffDelay.
 	/// </summary>
 	internal static TimeSpan CalculateBackoffDelay(

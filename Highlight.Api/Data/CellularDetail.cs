@@ -11,7 +11,7 @@ public class CellularDetail
 	/// The average signal strength score for the selected period.
 	/// </summary>
 	[JsonPropertyName("signalScoreAvg")]
-	public required double? SignalScoreAvg { get; set; }
+	public required double? SignalScoreAverage { get; set; }
 
 	/// <summary>
 	/// The minimum/worst signal strength score for the selected period.

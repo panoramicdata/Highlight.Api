@@ -5,28 +5,28 @@ namespace Highlight.Api.Data;
 public class BearerSummaryLoad
 {
 	[JsonPropertyName("loadInAvgBps")]
-	public int? LoadInAvgBps { get; set; }
+	public int? LoadInAverageBps { get; set; }
 
 	[JsonPropertyName("loadInAvgPercent")]
-	public float? LoadInAvgPercent { get; set; }
+	public float? LoadInAveragePercent { get; set; }
 
 	[JsonPropertyName("loadOutAvgBps")]
-	public int? LoadOutAvgBps { get; set; }
+	public int? LoadOutAverageBps { get; set; }
 
 	[JsonPropertyName("loadOutAvgPercent")]
-	public float? LoadOutAvgPercent { get; set; }
+	public float? LoadOutAveragePercent { get; set; }
 
 	[JsonPropertyName("loadIn95thBps")]
-	public int? LoadIn95thBps { get; set; }
+	public int? LoadIn95thPercentileBps { get; set; }
 
 	[JsonPropertyName("loadIn95thPercent")]
-	public float? LoadIn95thPercent { get; set; }
+	public float? LoadIn95thPercentilePercent { get; set; }
 
 	[JsonPropertyName("loadOut95thBps")]
-	public int? LoadOut95thBps { get; set; }
+	public int? LoadOut95thPercentileBps { get; set; }
 
 	[JsonPropertyName("loadOut95thPercent")]
-	public float? LoadOut95thPercent { get; set; }
+	public float? LoadOut95thPercentilePercent { get; set; }
 
 	[JsonPropertyName("loadInPeakBps")]
 	public int? LoadInPeakBps { get; set; }

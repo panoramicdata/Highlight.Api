@@ -53,7 +53,7 @@ public class PerformanceSummary
 	/// For MOS summary only: The average MOS score for the period. Obtained from the summary tables.
 	/// </summary>
 	[JsonPropertyName("mosScoreAvg")]
-	public double? MosScoreAvg { get; set; }
+	public double? MosScoreAverage { get; set; }
 
 	/// <summary>
 	/// For MOS summary only: The 95th percentile MOS score for the period. Obtained from the summary tables.
