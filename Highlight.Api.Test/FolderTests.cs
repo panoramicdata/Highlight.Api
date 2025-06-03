@@ -8,11 +8,11 @@ public class FolderTests(ITestOutputHelper iTestOutputHelper, Fixture fixture) :
 	[Fact]
 	public async Task GetAllSucceeds()
 	{
-		var watchNodes = await Client
+		var result = await Client
 			.Folders
 			.GetAllAsync(cancellationToken: default);
 
-		watchNodes.Should().NotBeNull();
-		watchNodes.Should().NotBeEmpty();
+		result.Should().NotBeNull();
+		result.Should().NotBeEmpty();
 	}
 }

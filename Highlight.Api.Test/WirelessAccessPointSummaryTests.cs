@@ -8,13 +8,13 @@ public class WirelessAccessPointSummaryTests(ITestOutputHelper iTestOutputHelper
 	[Fact]
 	public async Task GetAllSucceeds()
 	{
-		var watchNodes = await Client
+		var result = await Client
 			.WirelessAccessPoints
 			.GetAsync(
 				lastNDays: 1,
 				cancellationToken: default);
 
-		watchNodes.Should().NotBeNull();
-		watchNodes.Should().NotBeEmpty();
+		result.Should().NotBeNull();
+		result.Should().NotBeEmpty();
 	}
 }

@@ -25,17 +25,18 @@ internal class BetterJsonStringEnumConverter : JsonConverterFactory
 
 		public EnumMemberConverter()
 		{
-
 			foreach (var field in typeof(T).GetFields().Where(f => f.IsStatic))
 			{
-				var enumValue = (T)field.GetValue(null);
+				var enumValue = field.GetValue(null) is T value
+					? value
+					: throw new InvalidOperationException($"Field {field.Name} is not a valid enum value.");
 				var enumMemberAttr = field.GetCustomAttributes(typeof(EnumMemberAttribute), false)
 					.Cast<EnumMemberAttribute>()
 					.FirstOrDefault();
 
-				var value = enumMemberAttr?.Value ?? field.Name;
-				_fromValue[value] = enumValue;
-				_toValue[enumValue] = value;
+				var valueString = enumMemberAttr?.Value ?? field.Name;
+				_fromValue[valueString] = enumValue;
+				_toValue[enumValue] = valueString;
 			}
 		}
 

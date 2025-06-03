@@ -8,7 +8,7 @@ public class BearerSummaryTests(ITestOutputHelper iTestOutputHelper, Fixture fix
 	[Fact]
 	public async Task GetAllSucceeds()
 	{
-		var watchNodes = await Client
+		var result = await Client
 			.BearerSummary
 			.GetAsync(
 				lastNDays: 1,
@@ -17,7 +17,7 @@ public class BearerSummaryTests(ITestOutputHelper iTestOutputHelper, Fixture fix
 				outputHealth: true,
 				cancellationToken: default);
 
-		watchNodes.Should().NotBeNull();
-		watchNodes.Should().NotBeEmpty();
+		result.Should().NotBeNull();
+		result.Should().NotBeEmpty();
 	}
 }

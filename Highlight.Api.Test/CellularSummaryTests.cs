@@ -8,13 +8,13 @@ public class CellularSummaryTests(ITestOutputHelper iTestOutputHelper, Fixture f
 	[Fact]
 	public async Task GetAllSucceeds()
 	{
-		var watchNodes = await Client
+		var result = await Client
 			.CellularSummary
 			.GetAsync(
 				lastNDays: 1,
 				cancellationToken: default);
 
-		watchNodes.Should().NotBeNull();
-		watchNodes.Should().NotBeEmpty();
+		result.Should().NotBeNull();
+		result.Should().NotBeEmpty();
 	}
 }
