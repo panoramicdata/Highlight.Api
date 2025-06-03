@@ -1,8 +1,14 @@
 # Highlight.Api
 
+## Introduction
+
 A C# client library for the Highlight API, designed to interact with the Highlight performance testing and reporting features.
 
-Example usage:
+## Original documentation
+
+https://support.highlight.net/help/reporting/api_overview
+
+## Example usage
 
 ```csharp
 using Highlight.Api;
