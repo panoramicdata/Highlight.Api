@@ -1,0 +1,11 @@
+---
+exclude_paths:
+  - "Highlight.Api/bin/**"
+  - "Highlight.Api/obj/**"
+  - "Highlight.Api.Test/bin/**"
+  - "Highlight.Api.Test/obj/**"
+engines:
+  sonar-csharp:
+    patterns:
+      - pattern_id: "SonarCSharp_S2360"
+        enabled: false

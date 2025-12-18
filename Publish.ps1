@@ -58,7 +58,7 @@ if ([string]::IsNullOrWhiteSpace($nugetKey)) {
 }
 
 # Check if nuget-key.txt is gitignored
-$gitCheck = git check-ignore -q "nuget-key.txt" 2>&1
+$null = git check-ignore -q "nuget-key.txt" 2>&1
 if ($LASTEXITCODE -ne 0) {
     Write-Error "ERROR: nuget-key.txt is not in .gitignore. This is a security risk."
     exit 1
