@@ -1,5 +1,4 @@
 ﻿using AwesomeAssertions;
-using Xunit.Abstractions;
 
 namespace Highlight.Api.Test;
 
