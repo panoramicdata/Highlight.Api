@@ -11,7 +11,7 @@ public class BroadbandSummaryTests(ITestOutputHelper iTestOutputHelper, Fixture 
 			.BroadbandSummary
 			.GetAsync(
 				lastNDays: 1,
-				cancellationToken: default);
+				cancellationToken: CancellationToken);
 
 		result.Should().NotBeNull();
 		result.Should().NotBeEmpty();

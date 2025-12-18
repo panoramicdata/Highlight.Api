@@ -11,7 +11,7 @@ public class WirelessAccessPointSummaryTests(ITestOutputHelper iTestOutputHelper
 			.WirelessAccessPoints
 			.GetAsync(
 				lastNDays: 1,
-				cancellationToken: default);
+				cancellationToken: CancellationToken);
 
 		result.Should().NotBeNull();
 		result.Should().NotBeEmpty();

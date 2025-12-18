@@ -12,7 +12,7 @@ public class PerformanceSummaryTests(ITestOutputHelper iTestOutputHelper, Fixtur
 			.PerformanceTestSummary
 			.GetHttpServerAsync(
 				lastNDays: 1,
-				cancellationToken: default);
+				cancellationToken: CancellationToken);
 
 		result.Should().NotBeNull();
 		result.Should().NotBeEmpty();
@@ -25,7 +25,7 @@ public class PerformanceSummaryTests(ITestOutputHelper iTestOutputHelper, Fixtur
 			.PerformanceTestSummary
 			.GetIcmpTcpUdpAsync(
 				lastNDays: 1,
-				cancellationToken: default);
+				cancellationToken: CancellationToken);
 
 		result.Should().NotBeNull();
 		result.Should().NotBeEmpty();
@@ -38,7 +38,7 @@ public class PerformanceSummaryTests(ITestOutputHelper iTestOutputHelper, Fixtur
 			.PerformanceTestSummary
 			.GetMosAsync(
 				lastNDays: 1,
-				cancellationToken: default);
+				cancellationToken: CancellationToken);
 		result.Should().NotBeNull();
 		result.Should().NotBeEmpty();
 	}
@@ -50,7 +50,7 @@ public class PerformanceSummaryTests(ITestOutputHelper iTestOutputHelper, Fixtur
 			.PerformanceTestSummary
 			.GetPrecisionAsync(
 				lastNDays: 1,
-				cancellationToken: default);
+				cancellationToken: CancellationToken);
 
 		result.Should().NotBeNull();
 		result.Should().NotBeEmpty();

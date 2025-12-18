@@ -9,7 +9,7 @@ public class WatchNodeTests(ITestOutputHelper iTestOutputHelper, Fixture fixture
 	{
 		var result = await Client
 			.WatchNodes
-			.GetAsync(cancellationToken: default);
+			.GetAsync(cancellationToken: CancellationToken);
 
 		result.Should().NotBeNull();
 		result.Should().NotBeEmpty();

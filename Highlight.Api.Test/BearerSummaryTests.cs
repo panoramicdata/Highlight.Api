@@ -14,7 +14,7 @@ public class BearerSummaryTests(ITestOutputHelper iTestOutputHelper, Fixture fix
 				outputAvailability: true,
 				outputLoad: true,
 				outputHealth: true,
-				cancellationToken: default);
+				cancellationToken: CancellationToken);
 
 		result.Should().NotBeNull();
 		result.Should().NotBeEmpty();

@@ -8,6 +8,8 @@ public class TestWithOutput : TestBed<Fixture>
 {
 	protected ILogger Logger { get; }
 
+	protected static CancellationToken CancellationToken => TestContext.Current.CancellationToken;
+
 	public HighlightClient Client { get; }
 
 	public TestWithOutput(ITestOutputHelper testOutputHelper, Fixture fixture) : base(testOutputHelper, fixture)

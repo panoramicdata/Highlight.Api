@@ -11,7 +11,7 @@ public class CellularSummaryTests(ITestOutputHelper iTestOutputHelper, Fixture f
 			.CellularSummary
 			.GetAsync(
 				lastNDays: 1,
-				cancellationToken: default);
+				cancellationToken: CancellationToken);
 
 		result.Should().NotBeNull();
 		result.Should().NotBeEmpty();

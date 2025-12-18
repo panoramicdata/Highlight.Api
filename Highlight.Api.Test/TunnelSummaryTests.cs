@@ -11,7 +11,7 @@ public class TunnelSummaryTests(ITestOutputHelper iTestOutputHelper, Fixture fix
 			.TunnelSummary
 			.GetAsync(
 				lastNDays: 1,
-				cancellationToken: default);
+				cancellationToken: CancellationToken);
 
 		result.Should().NotBeNull();
 		result.Should().NotBeEmpty();

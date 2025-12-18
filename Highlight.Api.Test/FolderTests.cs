@@ -9,7 +9,7 @@ public class FolderTests(ITestOutputHelper iTestOutputHelper, Fixture fixture) :
 	{
 		var result = await Client
 			.Folders
-			.GetAllAsync(cancellationToken: default);
+			.GetAllAsync(cancellationToken: CancellationToken);
 
 		result.Should().NotBeNull();
 		result.Should().NotBeEmpty();
