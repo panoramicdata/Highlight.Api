@@ -1,4 +1,5 @@
 ﻿using AwesomeAssertions;
+using Highlight.Api.Data;
 
 namespace Highlight.Api.Test;
 
@@ -7,9 +8,11 @@ public class WatchNodeTests(ITestOutputHelper iTestOutputHelper, Fixture fixture
 	[Fact]
 	public async Task GetAllSucceeds()
 	{
+		var request = new WatchNodesRequest();
+
 		var result = await Client
 			.WatchNodes
-			.GetAsync(cancellationToken: CancellationToken);
+			.GetAsync(request, CancellationToken);
 
 		result.Should().NotBeNull();
 		result.Should().NotBeEmpty();

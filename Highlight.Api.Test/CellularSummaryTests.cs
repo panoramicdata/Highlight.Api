@@ -1,4 +1,5 @@
 ﻿using AwesomeAssertions;
+using Highlight.Api.Data;
 
 namespace Highlight.Api.Test;
 
@@ -7,11 +8,14 @@ public class CellularSummaryTests(ITestOutputHelper iTestOutputHelper, Fixture f
 	[Fact]
 	public async Task GetAllSucceeds()
 	{
+		var request = new CellularSummaryRequest
+		{
+			LastNDays = 1
+		};
+
 		var result = await Client
 			.CellularSummary
-			.GetAsync(
-				lastNDays: 1,
-				cancellationToken: CancellationToken);
+			.GetAsync(request, CancellationToken);
 
 		result.Should().NotBeNull();
 		result.Should().NotBeEmpty();

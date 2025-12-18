@@ -16,7 +16,7 @@
 		<RepositoryType>git</RepositoryType>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>Logo.png</PackageIcon>
-		<Description>.NET 9 API client for Highlight Reporting API.</Description>
+		<Description>.NET 10 API client for Highlight Reporting API.</Description>
 		<Copyright>Copyright © Panoramic Data Limited 2025</Copyright>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<IncludeSymbols>true</IncludeSymbols>

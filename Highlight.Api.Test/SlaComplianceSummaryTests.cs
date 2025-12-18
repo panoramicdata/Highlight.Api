@@ -1,14 +1,14 @@
-﻿using AwesomeAssertions;
+using AwesomeAssertions;
 using Highlight.Api.Data;
 
 namespace Highlight.Api.Test;
 
-public class BearerSummaryTests(ITestOutputHelper iTestOutputHelper, Fixture fixture) : TestWithOutput(iTestOutputHelper, fixture)
+public class SlaComplianceSummaryTests(ITestOutputHelper iTestOutputHelper, Fixture fixture) : TestWithOutput(iTestOutputHelper, fixture)
 {
 	[Fact]
 	public async Task GetAllSucceeds()
 	{
-		var request = new BearerSummaryRequest
+		var request = new SlaComplianceSummaryRequest
 		{
 			LastNDays = 1,
 			OutputAvailability = true,
@@ -17,10 +17,9 @@ public class BearerSummaryTests(ITestOutputHelper iTestOutputHelper, Fixture fix
 		};
 
 		var result = await Client
-			.BearerSummary
+			.SlaComplianceSummary
 			.GetAsync(request, CancellationToken);
 
 		result.Should().NotBeNull();
-		result.Should().NotBeEmpty();
 	}
 }

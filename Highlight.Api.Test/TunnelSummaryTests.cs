@@ -1,4 +1,5 @@
 ﻿using AwesomeAssertions;
+using Highlight.Api.Data;
 
 namespace Highlight.Api.Test;
 
@@ -7,11 +8,14 @@ public class TunnelSummaryTests(ITestOutputHelper iTestOutputHelper, Fixture fix
 	[Fact]
 	public async Task GetAllSucceeds()
 	{
+		var request = new TunnelSummaryRequest
+		{
+			LastNDays = 1
+		};
+
 		var result = await Client
 			.TunnelSummary
-			.GetAsync(
-				lastNDays: 1,
-				cancellationToken: CancellationToken);
+			.GetAsync(request, CancellationToken);
 
 		result.Should().NotBeNull();
 		result.Should().NotBeEmpty();

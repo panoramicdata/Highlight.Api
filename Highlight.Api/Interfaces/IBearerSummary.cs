@@ -12,6 +12,18 @@ public interface IBearerSummary
 	/// Get all bearer summary.
 	/// See <see href="https://support.highlight.net/help/reporting/api_overview">API Documentation</see>
 	/// </summary>
+	/// <param name="request">The request parameters.</param>
+	/// <param name="cancellationToken">Cancellation token.</param>
+	[Get("/api/v2/summary/bearer")]
+	Task<List<BearerSummary>> GetAsync(
+		BearerSummaryRequest request,
+		CancellationToken cancellationToken
+	);
+
+	/// <summary>
+	/// Get all bearer summary.
+	/// See <see href="https://support.highlight.net/help/reporting/api_overview">API Documentation</see>
+	/// </summary>
 	/// <param name="isBusinessHours">
 	/// True if looking at BusinessHours time period, False if looking at 24 Hour time period. Default: False.
 	/// </param>
@@ -42,6 +54,7 @@ public interface IBearerSummary
 	/// <param name="cancellationToken">
 	/// Cancellation token.
 	/// </param>
+	[Obsolete("Use the overload that accepts a BearerSummaryRequest object instead.", true)]
 	[Get("/api/v2/summary/bearer")]
 	Task<List<BearerSummary>> GetAsync(
 		[Query] bool? isBusinessHours = null,

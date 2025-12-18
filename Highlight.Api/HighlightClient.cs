@@ -32,8 +32,11 @@ public class HighlightClient : IDisposable
 		BearerSummary = RestService.For<IBearerSummary>(_httpClient, refitSettings);
 		BroadbandSummary = RestService.For<IBroadbandSummary>(_httpClient, refitSettings);
 		CellularSummary = RestService.For<ICellularSummary>(_httpClient, refitSettings);
+		DeviceInventory = RestService.For<IDeviceInventory>(_httpClient, refitSettings);
 		Folders = RestService.For<IFolders>(_httpClient, refitSettings);
 		PerformanceTestSummary = RestService.For<IPerformanceTestSummary>(_httpClient, refitSettings);
+		SlaComplianceSummary = RestService.For<ISlaComplianceSummary>(_httpClient, refitSettings);
+		SwitchPortCapacitySummary = RestService.For<ISwitchPortCapacitySummary>(_httpClient, refitSettings);
 		TunnelSummary = RestService.For<ITunnelSummary>(_httpClient, refitSettings);
 		WatchNodes = RestService.For<IWatchNodes>(_httpClient, refitSettings);
 		WirelessAccessPoints = RestService.For<IWirelessAccessPointSummary>(_httpClient, refitSettings);
@@ -45,9 +48,15 @@ public class HighlightClient : IDisposable
 
 	public ICellularSummary CellularSummary { get; }
 
+	public IDeviceInventory DeviceInventory { get; }
+
 	public IFolders Folders { get; }
 
 	public IPerformanceTestSummary PerformanceTestSummary { get; }
+
+	public ISlaComplianceSummary SlaComplianceSummary { get; }
+
+	public ISwitchPortCapacitySummary SwitchPortCapacitySummary { get; }
 
 	public ITunnelSummary TunnelSummary { get; }
 

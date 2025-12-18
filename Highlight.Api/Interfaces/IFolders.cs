@@ -10,5 +10,5 @@ public interface IFolders
 	/// </summary>
 	[Get("/api/v2/tree/folders")]
 	Task<List<Folder>> GetAllAsync(
-		CancellationToken cancellationToken = default);
+		CancellationToken cancellationToken);
 }

@@ -1,18 +1,21 @@
 ﻿using AwesomeAssertions;
+using Highlight.Api.Data;
 
 namespace Highlight.Api.Test;
 
 public class PerformanceSummaryTests(ITestOutputHelper iTestOutputHelper, Fixture fixture) : TestWithOutput(iTestOutputHelper, fixture)
 {
-
 	[Fact]
 	public async Task GetHttpServerSucceeds()
 	{
+		var request = new PerformanceSummaryRequest
+		{
+			LastNDays = 1
+		};
+
 		var result = await Client
 			.PerformanceTestSummary
-			.GetHttpServerAsync(
-				lastNDays: 1,
-				cancellationToken: CancellationToken);
+			.GetHttpServerAsync(request, CancellationToken);
 
 		result.Should().NotBeNull();
 		result.Should().NotBeEmpty();
@@ -21,11 +24,14 @@ public class PerformanceSummaryTests(ITestOutputHelper iTestOutputHelper, Fixtur
 	[Fact]
 	public async Task GetIcmpTcpUdpSucceeds()
 	{
+		var request = new PerformanceSummaryRequest
+		{
+			LastNDays = 1
+		};
+
 		var result = await Client
 			.PerformanceTestSummary
-			.GetIcmpTcpUdpAsync(
-				lastNDays: 1,
-				cancellationToken: CancellationToken);
+			.GetIcmpTcpUdpAsync(request, CancellationToken);
 
 		result.Should().NotBeNull();
 		result.Should().NotBeEmpty();
@@ -34,11 +40,15 @@ public class PerformanceSummaryTests(ITestOutputHelper iTestOutputHelper, Fixtur
 	[Fact]
 	public async Task GetMosSucceeds()
 	{
+		var request = new PerformanceSummaryRequest
+		{
+			LastNDays = 1
+		};
+
 		var result = await Client
 			.PerformanceTestSummary
-			.GetMosAsync(
-				lastNDays: 1,
-				cancellationToken: CancellationToken);
+			.GetMosAsync(request, CancellationToken);
+
 		result.Should().NotBeNull();
 		result.Should().NotBeEmpty();
 	}
@@ -46,11 +56,14 @@ public class PerformanceSummaryTests(ITestOutputHelper iTestOutputHelper, Fixtur
 	[Fact]
 	public async Task GetPrecisionSucceeds()
 	{
+		var request = new PerformanceSummaryRequest
+		{
+			LastNDays = 1
+		};
+
 		var result = await Client
 			.PerformanceTestSummary
-			.GetPrecisionAsync(
-				lastNDays: 1,
-				cancellationToken: CancellationToken);
+			.GetPrecisionAsync(request, CancellationToken);
 
 		result.Should().NotBeNull();
 		result.Should().NotBeEmpty();
