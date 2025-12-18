@@ -5,7 +5,6 @@ exclude_paths:
   - "Highlight.Api.Test/bin/**"
   - "Highlight.Api.Test/obj/**"
 engines:
-  sonar-csharp:
-    patterns:
-      - pattern_id: "SonarCSharp_S2360"
-        enabled: false
+  sonarcsharp:
+    exclude_paths:
+      - "Highlight.Api/Interfaces/**"
