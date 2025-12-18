@@ -42,6 +42,8 @@ internal class BetterJsonStringEnumConverter : JsonConverterFactory
 
 		public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 		{
+			_ = typeToConvert; // Required by interface
+			_ = options; // Required by interface
 			var value = reader.GetString() ?? throw new InvalidDataException($"Could not read string from {nameof(Utf8JsonReader)}");
 			if (_fromValue.TryGetValue(value, out var result))
 			{
@@ -53,6 +55,7 @@ internal class BetterJsonStringEnumConverter : JsonConverterFactory
 
 		public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
 		{
+			_ = options; // Required by interface
 			if (_toValue.TryGetValue(value, out var stringValue))
 			{
 				writer.WriteStringValue(stringValue);

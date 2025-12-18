@@ -25,25 +25,25 @@ param(
 $ErrorActionPreference = 'Stop'
 
 # Step 1: Check for uncommitted changes (git porcelain)
-Write-Host "Checking for uncommitted changes..." -ForegroundColor Cyan
+Write-Information "Checking for uncommitted changes..." -InformationAction Continue
 $gitStatus = git status --porcelain
 if ($gitStatus) {
     Write-Error "ERROR: There are uncommitted changes in the repository. Please commit or stash them before publishing."
     exit 1
 }
-Write-Host "No uncommitted changes detected." -ForegroundColor Green
+Write-Information "No uncommitted changes detected." -InformationAction Continue
 
 # Step 2: Determine the Nerdbank git version
-Write-Host "Determining Nerdbank git version..." -ForegroundColor Cyan
+Write-Information "Determining Nerdbank git version..." -InformationAction Continue
 $version = nbgv get-version -v NuGetPackageVersion
 if ($LASTEXITCODE -ne 0) {
     Write-Error "ERROR: Failed to determine Nerdbank git version. Ensure nbgv is installed (dotnet tool install -g nbgv)."
     exit 1
 }
-Write-Host "Version: $version" -ForegroundColor Green
+Write-Information "Version: $version" -InformationAction Continue
 
 # Step 3: Check that nuget-key.txt exists, has content, and is gitignored
-Write-Host "Validating nuget-key.txt..." -ForegroundColor Cyan
+Write-Information "Validating nuget-key.txt..." -InformationAction Continue
 $nugetKeyPath = Join-Path $PSScriptRoot "nuget-key.txt"
 
 if (-not (Test-Path $nugetKeyPath)) {
@@ -63,23 +63,23 @@ if ($LASTEXITCODE -ne 0) {
     Write-Error "ERROR: nuget-key.txt is not in .gitignore. This is a security risk."
     exit 1
 }
-Write-Host "nuget-key.txt validated and is gitignored." -ForegroundColor Green
+Write-Information "nuget-key.txt validated and is gitignored." -InformationAction Continue
 
 # Step 4: Run unit tests (unless -SkipTests is specified)
 if (-not $SkipTests) {
-    Write-Host "Running unit tests..." -ForegroundColor Cyan
+    Write-Information "Running unit tests..." -InformationAction Continue
     dotnet test "$PSScriptRoot\Highlight.Api.Test\Highlight.Api.Test.csproj" --configuration Release --no-restore
     if ($LASTEXITCODE -ne 0) {
         Write-Error "ERROR: Unit tests failed."
         exit 1
     }
-    Write-Host "Unit tests passed." -ForegroundColor Green
+    Write-Information "Unit tests passed." -InformationAction Continue
 } else {
-    Write-Host "Skipping unit tests as requested." -ForegroundColor Yellow
+    Write-Warning "Skipping unit tests as requested."
 }
 
 # Step 5: Build and publish to nuget.org
-Write-Host "Building package..." -ForegroundColor Cyan
+Write-Information "Building package..." -InformationAction Continue
 dotnet build "$PSScriptRoot\Highlight.Api\Highlight.Api.csproj" --configuration Release
 if ($LASTEXITCODE -ne 0) {
     Write-Error "ERROR: Build failed."
@@ -92,12 +92,12 @@ if (-not (Test-Path $packagePath)) {
     exit 1
 }
 
-Write-Host "Publishing to nuget.org..." -ForegroundColor Cyan
+Write-Information "Publishing to nuget.org..." -InformationAction Continue
 dotnet nuget push $packagePath --api-key $nugetKey --source https://api.nuget.org/v3/index.json --skip-duplicate
 if ($LASTEXITCODE -ne 0) {
     Write-Error "ERROR: Failed to publish to nuget.org."
     exit 1
 }
 
-Write-Host "Successfully published Highlight.Api version $version to nuget.org!" -ForegroundColor Green
+Write-Information "Successfully published Highlight.Api version $version to nuget.org!" -InformationAction Continue
 exit 0
