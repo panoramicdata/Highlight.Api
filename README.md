@@ -19,6 +19,39 @@ dotnet add package Highlight.Api
 
 Official API documentation: https://help.highlight.net/reporting/reporting-api
 
+## Breaking Changes in v2.0.12
+
+Version 2.0.12 introduces a new **request object pattern** for all API methods. The old method signatures with individual parameters are now marked as `[Obsolete]` and will cause compile-time errors that include instructions on how to migrate.
+The migration to the new pattern is straightforward and improves code readability and maintainability.
+
+### Migration Guide
+
+**Before (deprecated):**
+```csharp
+// This will cause a compile-time error
+var result = await client.BearerSummary.GetAsync(
+    lastNDays: 7,
+    outputAvailability: true,
+    cancellationToken: token);
+```
+
+**After (recommended):**
+```csharp
+var request = new BearerSummaryRequest
+{
+    LastNDays = 7,
+    OutputAvailability = true
+};
+var result = await client.BearerSummary.GetAsync(request, token);
+```
+
+To migrate your code:
+1. Create a new request object (e.g., `BearerSummaryRequest`, `PerformanceSummaryRequest`)
+2. Set the properties on the request object instead of passing individual parameters
+3. Call the method with the request object and cancellation token
+
+The obsolete methods are marked with `[Obsolete("...", true)]` which generates compile-time errors. Follow the compiler messages to identify which calls need to be updated.
+
 ## Quick Start
 
 ```csharp
