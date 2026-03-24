@@ -59,5 +59,8 @@ public enum WatchType
 	TcpConnect,
 
 	[EnumMember(Value = "UDP Echo")]
-	UdpEcho
+	UdpEcho,
+
+	[EnumMember(Value = "Device Status")]
+	DeviceStatus
 }
