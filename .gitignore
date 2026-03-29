@@ -6,6 +6,9 @@
 # NuGet API key
 nuget-key.txt
 
+# Stray directories
+PanoramicData.Mapper/
+
 # User-specific files
 *.rsuser
 *.suo
