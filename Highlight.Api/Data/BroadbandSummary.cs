@@ -27,6 +27,7 @@ public class BroadbandSummary
 
 	/// <summary>
 	/// "Day" | "Month" – Is the summary related to a day's data or a month.
+	/// </summary>
 	[JsonPropertyName("dateGranularity")]
 	public required string DateGranularity { get; set; }
 
