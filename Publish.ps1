@@ -1,103 +1,50 @@
-<#
-.SYNOPSIS
-    Publishes the Highlight.Api package to NuGet.org
-
-.DESCRIPTION
-    This script performs the following steps:
-    1. Checks for uncommitted changes (git porcelain)
-    2. Determines the Nerdbank git version
-    3. Validates nuget-key.txt exists, has content, and is gitignored
-    4. Runs unit tests (unless -SkipTests is specified)
-    5. Publishes to nuget.org
-
-.PARAMETER SkipTests
-    If specified, skips running unit tests
-
-.EXAMPLE
-    .\Publish.ps1
-    .\Publish.ps1 -SkipTests
-#>
-
-param(
-    [switch]$SkipTests
-)
+# Panoramic Data NuGet Publish Script (Standard)
+# Tags the current commit with the NBGV version and pushes to trigger CI/CD publishing.
+# Usage: .\Publish.ps1
 
 $ErrorActionPreference = 'Stop'
 
-# Step 1: Check for uncommitted changes (git porcelain)
-Write-Information "Checking for uncommitted changes..." -InformationAction Continue
-$gitStatus = git status --porcelain
-if ($gitStatus) {
-    Write-Error "ERROR: There are uncommitted changes in the repository. Please commit or stash them before publishing."
-    exit 1
-}
-Write-Information "No uncommitted changes detected." -InformationAction Continue
-
-# Step 2: Determine the Nerdbank git version
-Write-Information "Determining Nerdbank git version..." -InformationAction Continue
-$version = nbgv get-version -v NuGetPackageVersion
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "ERROR: Failed to determine Nerdbank git version. Ensure nbgv is installed (dotnet tool install -g nbgv)."
-    exit 1
-}
-Write-Information "Version: $version" -InformationAction Continue
-
-# Step 3: Check that nuget-key.txt exists, has content, and is gitignored
-Write-Information "Validating nuget-key.txt..." -InformationAction Continue
-$nugetKeyPath = Join-Path $PSScriptRoot "nuget-key.txt"
-
-if (-not (Test-Path $nugetKeyPath)) {
-    Write-Error "ERROR: nuget-key.txt does not exist in the solution root."
+# Check for clean working tree (porcelain)
+$status = git status --porcelain
+if ($status) {
+    Write-Error "Working tree is not clean. Commit or stash changes before publishing.`n$status"
     exit 1
 }
 
-$nugetKey = (Get-Content $nugetKeyPath -Raw).Trim()
-if ([string]::IsNullOrWhiteSpace($nugetKey)) {
-    Write-Error "ERROR: nuget-key.txt is empty."
+# Ensure we are on the main branch
+$branch = git rev-parse --abbrev-ref HEAD
+if ($branch -ne 'main') {
+    Write-Error "Publishing is only supported from the 'main' branch (currently on '$branch')."
     exit 1
 }
 
-# Check if nuget-key.txt is gitignored
-$null = git check-ignore -q "nuget-key.txt" 2>&1
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "ERROR: nuget-key.txt is not in .gitignore. This is a security risk."
-    exit 1
-}
-Write-Information "nuget-key.txt validated and is gitignored." -InformationAction Continue
-
-# Step 4: Run unit tests (unless -SkipTests is specified)
-if (-not $SkipTests) {
-    Write-Information "Running unit tests..." -InformationAction Continue
-    dotnet test "$PSScriptRoot\Highlight.Api.Test\Highlight.Api.Test.csproj" --configuration Release --no-restore
-    if ($LASTEXITCODE -ne 0) {
-        Write-Error "ERROR: Unit tests failed."
-        exit 1
-    }
-    Write-Information "Unit tests passed." -InformationAction Continue
-} else {
-    Write-Warning "Skipping unit tests as requested."
-}
-
-# Step 5: Build and publish to nuget.org
-Write-Information "Building package..." -InformationAction Continue
-dotnet build "$PSScriptRoot\Highlight.Api\Highlight.Api.csproj" --configuration Release
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "ERROR: Build failed."
+# Ensure local main is up to date with remote
+git fetch origin main --quiet
+$localHead = git rev-parse HEAD
+$remoteHead = git rev-parse origin/main
+if ($localHead -ne $remoteHead) {
+    Write-Error "Local branch is not up to date with origin/main. Pull or push first."
     exit 1
 }
 
-$packagePath = Join-Path $PSScriptRoot "Highlight.Api\bin\Release\Highlight.Api.$version.nupkg"
-if (-not (Test-Path $packagePath)) {
-    Write-Error "ERROR: Package not found at expected path: $packagePath"
+# Get version from NBGV
+$versionJson = nbgv get-version -f json | ConvertFrom-Json
+$version = $versionJson.SimpleVersion
+
+if (-not $version) {
+    Write-Error "Failed to determine version from nbgv."
     exit 1
 }
 
-Write-Information "Publishing to nuget.org..." -InformationAction Continue
-dotnet nuget push $packagePath --api-key $nugetKey --source https://api.nuget.org/v3/index.json --skip-duplicate
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "ERROR: Failed to publish to nuget.org."
+# Check tag doesn't already exist
+$existingTag = git tag -l $version
+if ($existingTag) {
+    Write-Error "Tag '$version' already exists."
     exit 1
 }
 
-Write-Information "Successfully published Highlight.Api version $version to nuget.org!" -InformationAction Continue
-exit 0
+Write-Host "Tagging as $version ..." -ForegroundColor Cyan
+git tag $version
+git push origin $version
+
+Write-Host "✅ Published tag $version — CI will build and push to NuGet." -ForegroundColor Green
