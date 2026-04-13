@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using System.Text;
 
 namespace Highlight.Api;
 
@@ -7,7 +8,7 @@ internal sealed class SmartHttpClientHandler(HighlightClientOptions options) : H
 {
 	private readonly HighlightClientOptions _options = options;
 	private readonly ILogger _logger = options.Logger;
-	private readonly LogLevel _levelToLogAt = LogLevel.Trace;
+	private readonly LogLevel _levelToLogAt = LogLevel.Debug;
 
 	private readonly Stopwatch _durationStopWatch = new();
 
@@ -73,11 +74,13 @@ internal sealed class SmartHttpClientHandler(HighlightClientOptions options) : H
 			return;
 		}
 
-		_logger.Log(_levelToLogAt, "{LogPrefix}Request\r\n{Request}", logPrefix, request);
+		_logger.Log(_levelToLogAt, "{LogPrefix}{Method} {Uri}", logPrefix, request.Method, request.RequestUri);
+		_logger.Log(_levelToLogAt, "{LogPrefix}Request Headers:\r\n{Headers}", logPrefix, FormatHeaders(request.Headers));
 		if (request.Content != null)
 		{
 			var requestContent = await request.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-			_logger.Log(_levelToLogAt, "{LogPrefix}RequestContent\r\n{RequestContent}", logPrefix, requestContent);
+			_logger.Log(_levelToLogAt, "{LogPrefix}Request Headers:\r\n{Headers}", logPrefix, FormatHeaders(request.Content.Headers));
+			_logger.Log(_levelToLogAt, "{LogPrefix}Request Body:\r\n{RequestContent}", logPrefix, requestContent);
 		}
 	}
 
@@ -88,11 +91,13 @@ internal sealed class SmartHttpClientHandler(HighlightClientOptions options) : H
 			return;
 		}
 
-		_logger.Log(_levelToLogAt, "{LogPrefix}Response\r\n{HttpResponseMessage}", logPrefix, response);
+		_logger.Log(_levelToLogAt, "{LogPrefix}Response {StatusCode}", logPrefix, (int)response.StatusCode);
+		_logger.Log(_levelToLogAt, "{LogPrefix}Response Headers:\r\n{Headers}", logPrefix, FormatHeaders(response.Headers));
 		if (response.Content != null)
 		{
+			_logger.Log(_levelToLogAt, "{LogPrefix}Response Content Headers:\r\n{Headers}", logPrefix, FormatHeaders(response.Content.Headers));
 			var responseContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-			_logger.Log(_levelToLogAt, "{LogPrefix}ResponseContent\r\n{ResponseContent}", logPrefix, responseContent);
+			_logger.Log(_levelToLogAt, "{LogPrefix}Response Body:\r\n{ResponseContent}", logPrefix, responseContent);
 		}
 	}
 
@@ -218,6 +223,20 @@ internal sealed class SmartHttpClientHandler(HighlightClientOptions options) : H
 			delay.TotalSeconds,
 			request.Method.ToString(),
 			request.RequestUri);
+	}
+
+	private string FormatHeaders(System.Net.Http.Headers.HttpHeaders headers)
+	{
+		var sb = new StringBuilder();
+		foreach (var header in headers)
+		{
+			var value = string.Equals(header.Key, "x-api-key", StringComparison.OrdinalIgnoreCase)
+				? "***MASKED***"
+				: string.Join(", ", header.Value);
+			sb.AppendLine($"  {header.Key}: {value}");
+		}
+
+		return sb.ToString().TrimEnd();
 	}
 
 	/// <summary>

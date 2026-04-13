@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Xunit.Microsoft.DependencyInjection;
 using Xunit.Microsoft.DependencyInjection.Abstracts;
 
@@ -19,6 +20,10 @@ public class Fixture : TestBedFixture
 		services
 			.AddScoped<CancellationTokenSource>()
 			.Configure<TestPortalConfig>(_configuration.GetSection("Config"));
+
+#if DEBUG
+		services.AddLogging(builder => builder.SetMinimumLevel(LogLevel.Debug));
+#endif
 	}
 
 	protected override ValueTask DisposeAsyncCore()

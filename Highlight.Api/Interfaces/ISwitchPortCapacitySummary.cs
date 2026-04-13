@@ -14,7 +14,7 @@ public interface ISwitchPortCapacitySummary
 	/// </summary>
 	/// <param name="request">The request parameters.</param>
 	/// <param name="cancellationToken">Cancellation token.</param>
-	[Get("/api/v2/summary/switchPortCapacity")]
+	[Get("/api/v2/summary/switch")]
 	Task<List<SwitchPortCapacitySummary>> GetAsync(
 		SwitchPortCapacitySummaryRequest request,
 		CancellationToken cancellationToken
