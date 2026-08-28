@@ -6,6 +6,7 @@ namespace Highlight.Api.Test;
 /// <summary>
 /// Tests for Switch Port Capacity Summary endpoint.
 /// </summary>
+[Trait("Category", "Integration")]
 public class SwitchPortCapacitySummaryTests(ITestOutputHelper iTestOutputHelper, Fixture fixture) : TestWithOutput(iTestOutputHelper, fixture)
 {
 	[Fact]

@@ -2,6 +2,7 @@
 
 namespace Highlight.Api.Test;
 
+[Trait("Category", "Integration")]
 public class FolderTests(ITestOutputHelper iTestOutputHelper, Fixture fixture) : TestWithOutput(iTestOutputHelper, fixture)
 {
 	[Fact]

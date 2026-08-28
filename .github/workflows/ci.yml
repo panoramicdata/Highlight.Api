@@ -27,8 +27,13 @@ jobs:
       - name: Build
         run: dotnet build --no-restore --configuration Release
 
-      - name: Test
-        run: dotnet test --no-build --configuration Release --verbosity normal
+      # No Test step: every suite in Highlight.Api.Test is tagged Category=Integration and
+      # calls the live Highlight portal using credentials from user secrets, which CI does
+      # not have. Running them here failed every tagged build and blocked publishing.
+      # Run them locally with:
+      #   ./Highlight.Api.Test/bin/Release/net10.0/Highlight.Api.Test.exe
+      # If genuine unit tests are added later, reinstate a Test step invoking that
+      # executable with --filter "Category!=Integration".
 
       - name: Pack
         run: dotnet pack Highlight.Api/Highlight.Api.csproj --no-build --configuration Release --output ./artifacts

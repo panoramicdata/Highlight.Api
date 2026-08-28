@@ -3,6 +3,7 @@ using Highlight.Api.Data;
 
 namespace Highlight.Api.Test;
 
+[Trait("Category", "Integration")]
 public class WirelessAccessPointSummaryTests(ITestOutputHelper iTestOutputHelper, Fixture fixture) : TestWithOutput(iTestOutputHelper, fixture)
 {
 	[Fact]
