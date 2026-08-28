@@ -29,11 +29,12 @@ jobs:
 
       # No Test step: every suite in Highlight.Api.Test is tagged Category=Integration and
       # calls the live Highlight portal using credentials from user secrets, which CI does
-      # not have. Running them here failed every tagged build and blocked publishing.
-      # Run them locally with:
-      #   ./Highlight.Api.Test/bin/Release/net10.0/Highlight.Api.Test.exe
-      # If genuine unit tests are added later, reinstate a Test step invoking that
-      # executable with --filter "Category!=Integration".
+      # not have. Filtering them out leaves zero tests, which Microsoft.Testing.Platform
+      # treats as a failure (exit code 8), so there is no green Test step to run here.
+      # Run them locally with:  dotnet test --configuration Release
+      # (global.json opts dotnet test into Microsoft.Testing.Platform, so this works.)
+      # If genuine unit tests are added later, reinstate a Test step with
+      #   dotnet test --configuration Release --no-build --filter "Category!=Integration"
 
       - name: Pack
         run: dotnet pack Highlight.Api/Highlight.Api.csproj --no-build --configuration Release --output ./artifacts

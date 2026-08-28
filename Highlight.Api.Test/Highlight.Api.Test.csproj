@@ -30,6 +30,10 @@
 	<PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" PrivateAssets="all" /></ItemGroup>
 
 	<ItemGroup>
+		<Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Using Include="Xunit" />
 		<PackageReference Include="Xunit.Microsoft.DependencyInjection" />
 	    <ProjectReference Include="..\Highlight.Api\Highlight.Api.csproj" />
