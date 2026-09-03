@@ -18,19 +18,4 @@ public interface ICellularSummary
 		CellularSummaryRequest request,
 		CancellationToken cancellationToken
 	);
-
-	/// <summary>
-	/// Get all cellular summary.
-	/// </summary>
-	[Obsolete("Use the overload that accepts a CellularSummaryRequest object instead.", true)]
-	[Get("/api/v2/summary/cellular")]
-	Task<List<CellularSummary>> GetAsync(
-		[Query] bool? isBusinessHours = null,
-		[Query] int? lastNDays = null,
-		[Query] string? fromDate = null,
-		[Query] string? toDate = null,
-		[Query] string? dateGranularity = null,
-		[Query] List<int>? folderIds = null,
-		CancellationToken cancellationToken = default
-	);
 }

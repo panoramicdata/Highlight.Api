@@ -19,19 +19,4 @@ public interface IWirelessAccessPointSummary
 		WirelessAccessPointSummaryRequest request,
 		CancellationToken cancellationToken
 	);
-
-	/// <summary>
-	/// Get all wireless access point summary.
-	/// </summary>
-	[Obsolete("Use the overload that accepts a WirelessAccessPointSummaryRequest object instead.", true)]
-	[Get("/api/v2/summary/wirelessAccessPoint")]
-	Task<List<WirelessAccessPointSummary>> GetAsync(
-		[Query] bool? isBusinessHours = null,
-		[Query] int? lastNDays = null,
-		[Query] string? fromDate = null,
-		[Query] string? toDate = null,
-		[Query] string? dateGranularity = null,
-		[Query] List<int>? folderIds = null,
-		CancellationToken cancellationToken = default
-	);
 }

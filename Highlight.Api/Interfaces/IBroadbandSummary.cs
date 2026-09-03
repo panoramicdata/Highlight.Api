@@ -18,19 +18,4 @@ public interface IBroadbandSummary
 		BroadbandSummaryRequest request,
 		CancellationToken cancellationToken
 	);
-
-	/// <summary>
-	/// Get all broadband summary.
-	/// </summary>
-	[Obsolete("Use the overload that accepts a BroadbandSummaryRequest object instead.", true)]
-	[Get("/api/v2/summary/broadband")]
-	Task<List<BroadbandSummary>> GetAsync(
-		[Query] bool? isBusinessHours = null,
-		[Query] int? lastNDays = null,
-		[Query] string? fromDate = null,
-		[Query] string? toDate = null,
-		[Query] string? dateGranularity = null,
-		[Query] List<int>? folderIds = null,
-		CancellationToken cancellationToken = default
-	);
 }

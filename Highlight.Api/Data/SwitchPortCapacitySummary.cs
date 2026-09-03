@@ -5,23 +5,11 @@ namespace Highlight.Api.Data;
 /// <summary>
 /// Switch port capacity summary data.
 /// </summary>
-public class SwitchPortCapacitySummary
+public class SwitchPortCapacitySummary : SummaryBase
 {
-	[JsonPropertyName("watchId")]
-	public required int WatchId { get; set; }
-
-	[JsonPropertyName("date")]
-	public required string Date { get; set; }
-
-	[JsonPropertyName("isBusinessHours")]
-	public required bool IsBusinessHours { get; set; }
-
-	[JsonPropertyName("dateGranularity")]
-	public required string DateGranularity { get; set; }
-
-	[JsonPropertyName("lastDateSummarised")]
-	public required string LastDateSummarized { get; set; }
-
+	/// <summary>
+	/// Switch port related content.
+	/// </summary>
 	[JsonPropertyName("switch")]
 	public SwitchPortDetail? Switch { get; set; }
 }
