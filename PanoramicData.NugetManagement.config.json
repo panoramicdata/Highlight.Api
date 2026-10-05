@@ -1,0 +1,12 @@
+{
+	"version": 1,
+	"projects": {
+		// Every suite in Highlight.Api.Test is tagged Category=Integration and calls the live Highlight
+		// portal, which CI has no credentials for (see the note in .github/workflows/ci.yml). "None"
+		// tells the NuGet management tooling these tests cannot run unattended, so it does not ask for
+		// a coverage job that could only fail.
+		"Highlight.Api.Test/Highlight.Api.Test.csproj": {
+			"defaultTestingLevel": "None"
+		}
+	}
+}
