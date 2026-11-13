@@ -199,4 +199,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Copyright
 
-Copyright ï¿½ 2025 Panoramic Data Limited. All rights reserved.
+Copyright © 2025 Panoramic Data Limited. All rights reserved.
