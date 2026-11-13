@@ -5,9 +5,12 @@
 [![NuGet Downloads](https://img.shields.io/nuget/dt/Highlight.Api)](https://www.nuget.org/packages/Highlight.Api)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+
+Supports .NET 11.0.
+
 ## Introduction
 
-A .NET 10 client library for the Highlight API, designed to interact with the Highlight performance testing and reporting features.
+A .NET 11.0 client library for the Highlight API, designed to interact with the Highlight performance testing and reporting features.
 
 ## Installation
 
@@ -196,4 +199,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Copyright
 
-Copyright © 2025 Panoramic Data Limited. All rights reserved.
+Copyright ï¿½ 2025 Panoramic Data Limited. All rights reserved.
